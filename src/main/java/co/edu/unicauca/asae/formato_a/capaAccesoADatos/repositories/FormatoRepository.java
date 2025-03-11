@@ -54,9 +54,6 @@ public class FormatoRepository {
         Boolean respuesta;
         System.out.println("Invocando a eliminar un Formato");
         respuesta = this.mapaFormatos.remove(id) != null;
-        if (respuesta){
-            this.contadorId.decrementAndGet();
-        }
         return respuesta;
     }
     public String consultarEstado(Long id){

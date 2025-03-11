@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
-    include = As.PROPERTY, property = "type")
+    include = As.PROPERTY, property = "name")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = FormatoPPDTOPeticion.class, name = "PP"),
     @JsonSubTypes.Type(value = FormatoTIDTOPeticion.class, name = "TI")

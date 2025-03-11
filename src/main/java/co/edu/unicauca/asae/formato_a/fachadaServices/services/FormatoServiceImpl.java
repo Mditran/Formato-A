@@ -3,6 +3,7 @@ package co.edu.unicauca.asae.formato_a.fachadaServices.services;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Date;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -58,6 +59,8 @@ public class FormatoServiceImpl implements IFormatoServices{
     public FormatoDTORespuesta crearFormato(FormatoDTOPeticion formato){
         FormatoDTORespuesta formatoRetornar = null;
         FormatoEntity nuevoFormato = modelMapper.map(formato, FormatoEntity.class);
+        nuevoFormato.setEstado("Formulado");
+        nuevoFormato.setFechaDeCreacion(new Date());
         Optional<FormatoEntity> optionalFormato = this.servicioAccesoBaseDeDatos.crearFormato(nuevoFormato);
         if(optionalFormato.isPresent())
         {
@@ -69,14 +72,18 @@ public class FormatoServiceImpl implements IFormatoServices{
 
     public FormatoDTORespuesta actualizarFormato(Long id, FormatoDTOPeticion formato){
         FormatoDTORespuesta formatoRetornar = null;
-        FormatoEntity nuevoFormato = modelMapper.map(formato, FormatoEntity.class);
-        Optional<FormatoEntity> optionalFormato = this.servicioAccesoBaseDeDatos.actualizarFormato(id, nuevoFormato);
-        if(optionalFormato.isPresent())
+        Optional<FormatoEntity> formatoConsultar = this.servicioAccesoBaseDeDatos.consultarFormato(id);
+        
+        if(formatoConsultar.isPresent())
         {
-            FormatoEntity formatoEntity=optionalFormato.get();
-            formatoRetornar = this.modelMapper.map(formatoEntity, FormatoDTORespuesta.class);
+            FormatoEntity nuevoFormato = modelMapper.map(formato, FormatoEntity.class);
+            FormatoEntity formatoEntity=formatoConsultar.get();
+            formatoEntity.setNombreEstudiante(formato.getNombreEstudiante());
+
+            Optional<FormatoEntity> optionalFormato = this.servicioAccesoBaseDeDatos.actualizarFormato(id, nuevoFormato);
+            formatoRetornar = this.modelMapper.map(optionalFormato, FormatoDTORespuesta.class);
         }
-        return modelMapper.map(formatoRetornar, FormatoDTORespuesta.class);
+        return formatoRetornar;
     }
     public boolean eliminarFormato(Long id){
         return this.servicioAccesoBaseDeDatos.elimintarFormato(id);

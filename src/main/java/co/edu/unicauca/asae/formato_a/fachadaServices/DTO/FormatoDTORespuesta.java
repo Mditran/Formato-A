@@ -8,13 +8,15 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
-    include = As.PROPERTY, property = "type")
+    include = As.PROPERTY, property = "name")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = FormatoPPDTOPeticion.class, name = "PP"),
     @JsonSubTypes.Type(value = FormatoTIDTOPeticion.class, name = "TI")
