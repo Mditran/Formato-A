@@ -1,33 +1,30 @@
 package co.edu.unicauca.asae.formato_a.fachadaServices.estados;
 
-import co.edu.unicauca.asae.formato_a.capaControladores.FormatoController;
-import co.edu.unicauca.asae.formato_a.fachadaServices.DTO.FormatoDTORespuesta;
-import co.edu.unicauca.asae.formato_a.fachadaServices.services.FormatoServiceImpl;
+import co.edu.unicauca.asae.formato_a.fachadaServices.services.EstadoService;
 
 public class Formato {
     private EstadoInt estado;
-    Resultado objResultado;
+    private Resultado objResultado;
 
     public Formato() {
         this.estado = new EstadoFormulado(); // Estado inicial
     }
 
-    public Formato(int id, String nuevoEstado){
-        String estadoActual = FormatoServiceImpl.consultarFormato(id).estado;
-        EstadoController objFormato = new EstadoController(estadoActual);
+    public Formato(Long id, String nuevoEstado, String estadoActual){
+        EstadoService objFormato = new EstadoService(estadoActual);
 
         switch(nuevoEstado){
             case "Aprobado":
-                objResultado = objFormato.aprobarFormato(this);
+                objResultado = objFormato.getEstado().aprobarFormato(this);
                 break;
-            case "Corecciones":
-                objResultado = objFormato.enviarParaEvaluacion(this);
+            case "Correciones":  // Corregido de "Corecciones"
+                objResultado = objFormato.getEstado().enviarParaEvaluacion(this);
                 break;
             case "Evaluaciones":
-                objResultado = objFormato.fijarObservacionesFormato(this);
+                objResultado = objFormato.getEstado().fijarObservacionesFormato(this);
                 break;
-            case "NoAprabado":
-                objResultado = objFormato.noAprobarFormato(this);
+            case "NoAprobado": // Corregido de "NoAprabado"
+                objResultado = objFormato.getEstado().noAprobarFormato(this);
                 break;
             default:
                 break;
@@ -37,24 +34,24 @@ public class Formato {
     public void setEstado(EstadoInt estado) {
         this.estado = estado;
     }
-    
-    public EstadoInt getEstado()  {
+
+    public EstadoInt getEstado() {
         return this.estado;
     }
-        
+
     public Resultado enviarParaEvaluacion() {
         return this.estado.enviarParaEvaluacion(this);
     }
-    
+
     public Resultado aprobarFormato() {
         return this.estado.aprobarFormato(this);
     }
-    
+
     public Resultado fijarObservacionesFormato() {
         return this.estado.fijarObservacionesFormato(this);
     }
-    
+
     public Resultado noAprobarFormato() {
         return this.estado.noAprobarFormato(this);
-    } 
+    }
 }

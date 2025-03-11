@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import co.edu.unicauca.asae.formato_a.capaAccesoADatos.models.FormatoEntity;
-import co.edu.unicauca.asae.formato_a.capaAccesoADatos.models.FormatoPPEntity;
 import co.edu.unicauca.asae.formato_a.capaAccesoADatos.repositories.FormatoRepository;
 import co.edu.unicauca.asae.formato_a.fachadaServices.DTO.FormatoDTOPeticion;
 import co.edu.unicauca.asae.formato_a.fachadaServices.DTO.FormatoDTORespuesta;
@@ -57,10 +56,39 @@ public class FormatoServiceImpl implements IFormatoServices{
     }
 
     public FormatoDTORespuesta crearFormato(FormatoDTOPeticion formato){
-        FormatoDTORespuesta formatoRespuesta = null;
-        FormatoEntity nuevoFormato
-        nuevoFormato = this.modelMapper.map(formato, FormatoEntity)
+        FormatoDTORespuesta formatoRetornar = null;
+        FormatoEntity nuevoFormato = modelMapper.map(formato, FormatoEntity.class);
+        Optional<FormatoEntity> optionalFormato = this.servicioAccesoBaseDeDatos.crearFormato(nuevoFormato);
+        if(optionalFormato.isPresent())
+        {
+            FormatoEntity formatoEntity=optionalFormato.get();
+            formatoRetornar = this.modelMapper.map(formatoEntity, FormatoDTORespuesta.class);
+        }
+        return modelMapper.map(formatoRetornar, FormatoDTORespuesta.class);
+    }
 
+    public FormatoDTORespuesta actualizarFormato(Long id, FormatoDTOPeticion formato){
+        FormatoDTORespuesta formatoRetornar = null;
+        FormatoEntity nuevoFormato = modelMapper.map(formato, FormatoEntity.class);
+        Optional<FormatoEntity> optionalFormato = this.servicioAccesoBaseDeDatos.actualizarFormato(id, nuevoFormato);
+        if(optionalFormato.isPresent())
+        {
+            FormatoEntity formatoEntity=optionalFormato.get();
+            formatoRetornar = this.modelMapper.map(formatoEntity, FormatoDTORespuesta.class);
+        }
+        return modelMapper.map(formatoRetornar, FormatoDTORespuesta.class);
+    }
+    public boolean eliminarFormato(Long id){
+        return this.servicioAccesoBaseDeDatos.elimintarFormato(id);
+    }
+    public Resultado cambiarEstadoFormato(Long id, String nuevoEstado) {
+        return this.servicioAccesoBaseDeDatos.consultarFormato(id)
+            .map(formato -> {
+                formato.setEstado(nuevoEstado);
+                this.servicioAccesoBaseDeDatos.actualizarFormato(id, formato);
+                return new Resultado(true, "Estado cambiado exitosamente");
+            })
+            .orElse(new Resultado(false, "Formato no encontrado"));
     }
 
 }

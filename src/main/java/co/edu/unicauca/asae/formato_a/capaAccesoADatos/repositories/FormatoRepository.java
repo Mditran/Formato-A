@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
 
 import org.springframework.stereotype.Repository;
 
@@ -59,5 +58,14 @@ public class FormatoRepository {
             this.contadorId.decrementAndGet();
         }
         return respuesta;
+    }
+    public String consultarEstado(Long id){
+        String estado= "";
+        System.out.println("Invocando a Consultar un Formato");
+        Optional<FormatoEntity> respuesta = Optional.ofNullable(this.mapaFormatos.get(id));
+        if(respuesta.isPresent()){
+            estado = respuesta.get().getEstado();
+        }
+        return estado;
     }
 }
