@@ -1,6 +1,8 @@
 package co.edu.unicauca.asae.formato_a.fachadaServices.estados;
 
 import co.edu.unicauca.asae.formato_a.capaControladores.FormatoController;
+import co.edu.unicauca.asae.formato_a.fachadaServices.DTO.FormatoDTORespuesta;
+import co.edu.unicauca.asae.formato_a.fachadaServices.services.FormatoServiceImpl;
 
 public class Formato {
     private EstadoInt estado;
@@ -9,19 +11,23 @@ public class Formato {
     public Formato() {
         this.estado = new EstadoFormulado(); // Estado inicial
     }
+
     public Formato(int id, String nuevoEstado){
+        String estadoActual = FormatoServiceImpl.consultarFormato(id).estado;
+        EstadoController objFormato = new EstadoController(estadoActual);
+
         switch(nuevoEstado){
             case "Aprobado":
-                objResultado = this.estado.aprobarFormato(this);
+                objResultado = objFormato.aprobarFormato(this);
                 break;
             case "Corecciones":
-                objResultado = this.estado.enviarParaEvaluacion(this);
+                objResultado = objFormato.enviarParaEvaluacion(this);
                 break;
             case "Evaluaciones":
-                objResultado = this.estado.fijarObservacionesFormato(this);
+                objResultado = objFormato.fijarObservacionesFormato(this);
                 break;
             case "NoAprabado":
-                objResultado = this.estado.noAprobarFormato(this);
+                objResultado = objFormato.noAprobarFormato(this);
                 break;
             default:
                 break;
